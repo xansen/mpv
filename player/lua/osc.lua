@@ -55,10 +55,10 @@ local user_opts = {
     unicodeminus = false,       -- whether to use the Unicode minus sign character
 
     background_color = "#000000",     -- background color of the osc
-    timecode_color = "#FFFFFF",       -- color of the progress bar and time color
-    title_color = "#FFFFFF",          -- color of the title
+    timecode_color = "#CECECE",       -- color of the progress bar and time color
+    title_color = "#CECECE",          -- color of the title
     time_pos_color = "#FFFFFF",       -- color of the timecode at hovered position
-    buttons_color = "#FFFFFF",        -- color of big buttons, wc buttons, and bar small buttons
+    buttons_color = "#CECECE",        -- color of big buttons, wc buttons, and bar small buttons
     small_buttonsL_color = "#FFFFFF", -- color of left small buttons
     small_buttonsR_color = "#FFFFFF", -- color of right small buttons
     top_buttons_color = "#FFFFFF",    -- color of top buttons
@@ -1741,7 +1741,7 @@ local function bar_layout(direction, slim)
     lo.geometry = geo
     lo.style = osc_styles.timecodesBar
     lo.slider.border = 0
-    lo.slider.gap = 2
+    lo.slider.gap = 0
     lo.slider.tooltip_style = osc_styles.timePosBar
     lo.slider.tooltip_an = 5
     lo.slider.stype = user_opts["seekbarstyle"]
@@ -1956,30 +1956,10 @@ local function osc_init()
                  and user_opts.layout ~= "slimbottombar"
                  and user_opts.layout ~= "slimtopbar"
     state.slider_element = ne.enabled and ne or nil  -- used for forced_title
-    ne.slider.markerF = function ()
-        local duration = mp.get_property_number("duration")
-        if duration ~= nil then
-            local chapters = mp.get_property_native("chapter-list", {})
-            local markers = {}
-            for n = 1, #chapters do
-                markers[n] = (chapters[n].time / duration * 100)
-            end
-            return markers
-        else
-            return {}
-        end
-    end
+    ne.slider.markerF = nil
     ne.slider.posF =
         function () return mp.get_property_number("percent-pos") end
-    ne.slider.tooltipF = function (pos)
-        local duration = mp.get_property_number("duration")
-        if duration ~= nil and pos ~= nil then
-            local possec = duration * (pos / 100)
-            return mp.format_time(possec)
-        else
-            return ""
-        end
-    end
+    ne.slider.tooltipF = nil
     ne.slider.seekRangesF = function()
         if user_opts.seekrangestyle == "none" or not cache_enabled() then
             return nil
